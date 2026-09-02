@@ -1,0 +1,35 @@
+# Per-document misclassifications from both evaluation reports.
+# Transcribed from the two EVALUATION REPORT outputs; row counts reconcile
+# exactly with the confusion matrices (21 errors gen_verifier, 7 errors concur).
+#
+# OCCC = OC / Completion Certificate, RC = Registration, EC = Extension, UNK = Unknown
+#
+system,rera_id,ground_truth,prediction,direction
+gen_verifier,WBRERA/P/KOL/2025/002425,UNK,OCCC,false_accept
+gen_verifier,WBRERA/P/KOL/2025/002425,UNK,OCCC,false_accept
+gen_verifier,WBRERA/P/NOR/2023/000605,UNK,OCCC,false_accept
+gen_verifier,WBRERA/P/SOU/2023/000155,UNK,OCCC,false_accept
+gen_verifier,WBRERA/P/SOU/2023/000155,UNK,OCCC,false_accept
+gen_verifier,WBRERA/P/SOU/2023/000155,UNK,OCCC,false_accept
+gen_verifier,WBRERA/P/SOU/2023/000155,UNK,OCCC,false_accept
+gen_verifier,WBRERA/P/SOU/2023/000155,UNK,OCCC,false_accept
+gen_verifier,WBRERA/P/SOU/2023/000294,UNK,OCCC,false_accept
+gen_verifier,WBRERA/P/SOU/2023/000294,UNK,OCCC,false_accept
+gen_verifier,UPRERAPRJ757529,UNK,OCCC,false_accept
+gen_verifier,UPRERAPRJ757529,UNK,OCCC,false_accept
+gen_verifier,PRM/KA/RERA/1251/308/PR/250325/007618,UNK,OCCC,false_accept
+gen_verifier,PRM/KA/RERA/1251/308/PR/250325/007618,UNK,OCCC,false_accept
+gen_verifier,PRM/KA/RERA/1251/308/PR/271023/006349,UNK,OCCC,false_accept
+gen_verifier,MAA07612/A2M/EX1/020725/310826,UNK,RC,false_accept
+gen_verifier,PR/GJ/AHMEDABAD/AHMEDABAD CITY/Ahmedabad Municipal Corporation/MN23AA09923/110522,RC,EC,confusion
+gen_verifier,PR/GJ/AHMEDABAD/AHMEDABAD CITY/AUDA/MAA05823/A1M/080421,RC,EC,confusion
+gen_verifier,PR/GJ/AHMEDABAD/AHMEDABAD CITY/AUDA/MAA05823/A1M/080421,UNK,OCCC,false_accept
+gen_verifier,PR/GJ/AHMEDABAD/AHMEDABAD CITY/AUDA/MAA05823/A1M/080421,UNK,OCCC,false_accept
+gen_verifier,PR/GJ/AHMEDABAD/AHMEDABAD CITY/AUDA/MAA06829/040320,UNK,OCCC,false_accept
+concur,UPRERAPRJ918,OCCC,UNK,conservative_reject
+concur,UPRERAPRJ918,OCCC,UNK,conservative_reject
+concur,UPRERAPRJ757529,UNK,OCCC,false_accept
+concur,UPRERAPRJ757529,UNK,OCCC,false_accept
+concur,MAA07612/A2M/EX1/020725/310826,OCCC,UNK,conservative_reject
+concur,MAA07612/A2M/EX1/020725/310826,OCCC,UNK,conservative_reject
+concur,PR/GJ/AHMEDABAD/AHMEDABAD CITY/AUDA/MAA05823/A1M/080421,RC,UNK,conservative_reject

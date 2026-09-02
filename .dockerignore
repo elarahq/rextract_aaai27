@@ -1,0 +1,22 @@
+# Credentials must never enter the image
+.env
+.env.*
+!.env.example
+
+# The paper is not part of the service
+paper/
+
+# Local environment and build noise
+.venv/
+venv/
+__pycache__/
+**/__pycache__/
+*.py[cod]
+.git/
+.gitignore
+.DS_Store
+storage/
+deploy/
+Dockerfile
+.dockerignore
+README.md

@@ -1,0 +1,31 @@
+# Credentials — never commit
+.env
+
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+
+# LaTeX build artefacts
+paper/*.aux
+paper/*.bbl
+paper/*.blg
+paper/*.fdb_latexmk
+paper/*.fls
+paper/*.log
+paper/*.out
+paper/*.synctex.gz
+
+# Third-party papers kept locally for reference, not ours to redistribute
+paper/reference/
+
+# Local scratch
+storage/
+
+# macOS
+.DS_Store
+
+# Working backups of the paper source
+paper/main.tex.bak-*
+paper/main.tex.pre-*

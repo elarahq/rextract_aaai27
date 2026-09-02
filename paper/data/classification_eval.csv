@@ -1,0 +1,19 @@
+# Routing (classification) evaluation on the shared 143-document benchmark.
+# Both systems scored against the same ground truth: classifier_testing/current/inputlinka.csv
+#
+# system=gen_verifier : classifier + validator loop (generator-verifier)
+#                       report generated 2026-04-17 12:32:50
+#                       preds: classifier_testing/records/classification_resultspure10.csv
+# system=concur       : N-sample unanimity voting (current deployed system)
+#                       report generated 2026-04-20 13:22:37
+#                       preds: classifier_testing/current/classification_results.csv
+#
+system,class,tp,fp,tn,fn,accuracy,precision,recall,f1
+gen_verifier,Registration Certificate,43,1,97,2,0.9790,0.9773,0.9556,0.9663
+gen_verifier,Extension Certificate,8,2,133,0,0.9860,0.8000,1.0000,0.8889
+gen_verifier,OC / Completion Certificate,62,18,63,0,0.8741,0.7750,1.0000,0.8732
+gen_verifier,Unknown,9,0,115,19,0.8671,1.0000,0.3214,0.4865
+concur,Registration Certificate,44,0,98,1,0.9930,1.0000,0.9778,0.9888
+concur,Extension Certificate,8,0,135,0,1.0000,1.0000,1.0000,1.0000
+concur,OC / Completion Certificate,58,2,79,4,0.9580,0.9667,0.9355,0.9508
+concur,Unknown,26,5,110,2,0.9510,0.8387,0.9286,0.8814

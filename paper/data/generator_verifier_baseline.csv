@@ -1,0 +1,26 @@
+rera_id,state,registration_date,promised_completion_date,extension_approval_date,revised_promised_completion_date,oc_cc_issue_date,oc_cc_type,outcome,error_type,comment
+RERA-GRG-100-2018,HR,2019-02-21,2024-05-19,,,,,error,wrong_value_and_format,"promised_completion_date returned as 28/02/19 (MM/DD/YY) instead of 2024-05-19"
+RERA-GRG-877-2021,HR,2021-07-13,2023-09-30,,,,,ok,,
+RERA-GRG-1816-2024,HR,2025-04-16,2027-11-15,,,,,ok,,
+P01000005338,TS,2022-11-23,2024-07-30,,,,,ok,,
+P01100001034,TS,2019-07-16,2024-12-17,,,,,ok,,
+P01100001313,TS,2019-10-19,2022-12-31,,,,,ok,,
+P01100001858,TS,2020-03-21,2025-12-20,,,,,ok,,
+P01100001916,TS,2020-07-06,2024-12-31,,,,,error,wrong_value,"registration_date returned as 2020-07-27 instead of 2020-07-06"
+P01100002105,TS,2020-08-24,2026-05-14,,,,,ok,,
+P01100002110,TS,2020-08-24,2026-01-04,,,,,ok,,
+HIRA/P/KOL/2019/000354,WB,2019-02-02,2023-08-31,2020-10-15,2024-05-31,2023-11-17,Completion,ok,,
+HIRA/P/KOL/2019/000445,WB,2019-07-29,2021-03-31,2020-10-15,2021-12-31,2022-01-05,Completion,ok,,
+HIRA/P/NOR/2018/000267,WB,2018-12-14,2021-03-31,2020-10-15,2021-12-31,2022-08-04,Occupancy,ok,,
+HIRA/P/SOU/2018/000168,WB,2018-11-17,2021-03-31,2020-10-15,2021-12-31,2022-01-28,Completion,error,wrong_value_and_extra_docs,"OC/CC issue_date returned 2024-08-25 (gold 2022-01-28) and type Occupation (gold Completion); a second OC/CC entry written with all-null fields"
+HIRA/P/SOU/2019/000521,WB,2019-09-12,2023-02-28,2024-05-03,2024-12-31,2024-11-22,Occupancy,ok,,
+WBRERA/P/KOL/2023/000083,WB,2023-04-17,2024-12-31,,,2024-04-05,Occupancy,error,duplicate_conflict,"duplicate document: one copy yields correct 2024-04-05, the other yields 2022-10-18"
+WBRERA/P/KOL/2025/002425,WB,2025-02-04,2029-08-28,,,2024-08-29,Occupancy,ok,,
+WBRERA/P/KOL/2025/003465,WB,2025-09-11,2027-07-31,,,,,ok,,
+WBRERA/P/NOR/2023/000605,WB,2023-10-06,2024-08-31,,,2025-02-17,Occupancy,ok,,
+WBRERA/P/NOR/2023/000790,WB,2023-11-22,2028-10-31,,,2025-06-30,Completion,miss,recall_failure,"CC present in gold but never found; oc_cc_documents empty"
+WBRERA/P/NOR/2024/001351,WB,2024-04-22,2026-12-31,,,2025-09-03,Occupancy,ok,,
+WBRERA/P/SOU/2023/000024,WB,2023-03-27,2025-06-30,,,2024-01-24,Occupancy,ok,,
+WBRERA/P/SOU/2023/000155,WB,2023-06-01,2026-08-31,,,,,false_accept,irrelevant_accepted,"no OC/CC exists for this project; a GST certificate was classified as Occupancy with issue_date 2022-10-19"
+WBRERA/P/SOU/2023/000215,WB,2023-06-26,2026-07-31,,,2024-05-07,Occupancy,ok,,
+WBRERA/P/SOU/2023/000294,WB,2023-07-19,2023-12-31,,,2023-08-18,Occupancy,ok,,

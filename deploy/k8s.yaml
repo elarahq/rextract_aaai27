@@ -1,0 +1,101 @@
+# RE-XTRACT demo — Kubernetes manifests
+#
+#   kubectl create namespace rextract-demo
+#   kubectl -n rextract-demo create secret generic rextract-demo-secrets \
+#     --from-literal=GEMINI_API_KEY=... \
+#     --from-literal=DATABRICKS_SERVER_HOSTNAME=... \
+#     --from-literal=DATABRICKS_HTTP_PATH=... \
+#     --from-literal=DATABRICKS_ACCESS_TOKEN=...
+#   kubectl -n rextract-demo apply -f deploy/k8s.yaml
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: rextract-demo
+  labels: { app: rextract-demo }
+spec:
+  replicas: 1                       # see deploy/README.md before raising this
+  selector:
+    matchLabels: { app: rextract-demo }
+  template:
+    metadata:
+      labels: { app: rextract-demo }
+    spec:
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 10001
+        seccompProfile: { type: RuntimeDefault }
+      containers:
+        - name: demo
+          image: rextract-demo:1.0      # replace with your registry path
+          imagePullPolicy: IfNotPresent
+          ports:
+            - name: http
+              containerPort: 8000
+          # Four env vars are the whole contract; see deploy/README.md.
+          # Populate this Secret with whatever your secret manager uses
+          # (External Secrets Operator, Vault, Secrets Store CSI), or replace
+          # this block entirely if it injects env vars directly.
+          envFrom:
+            - secretRef:
+                name: rextract-demo-secrets
+          securityContext:
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: true    # the demo writes nothing to disk
+            capabilities: { drop: ["ALL"] }
+          volumeMounts:
+            - name: tmp
+              mountPath: /tmp
+          resources:
+            requests: { cpu: "500m", memory: "512Mi" }
+            limits:   { cpu: "2",    memory: "2Gi" }
+          # /api/config returns configuration constants only — no Databricks,
+          # no Ollama, no Gemini. Safe to poll.
+          readinessProbe:
+            httpGet: { path: /api/config, port: http }
+            initialDelaySeconds: 5
+            periodSeconds: 10
+          livenessProbe:
+            httpGet: { path: /api/config, port: http }
+            initialDelaySeconds: 15
+            periodSeconds: 30
+      volumes:
+        - name: tmp
+          emptyDir: {}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: rextract-demo
+spec:
+  type: ClusterIP
+  selector: { app: rextract-demo }
+  ports:
+    - name: http
+      port: 80
+      targetPort: http
+---
+# Ingress is the one place this service is unusual: /api/run is a Server-Sent
+# Events stream that stays open for the whole pipeline run (minutes, not
+# seconds). Proxy buffering MUST be off or the UI shows nothing until the run
+# ends, and read timeouts must exceed the longest run.
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: rextract-demo
+  annotations:
+    nginx.ingress.kubernetes.io/proxy-buffering: "off"
+    nginx.ingress.kubernetes.io/proxy-read-timeout: "1800"
+    nginx.ingress.kubernetes.io/proxy-send-timeout: "1800"
+spec:
+  ingressClassName: nginx
+  rules:
+    - host: rextract-demo.REPLACE-ME.internal
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: rextract-demo
+                port: { number: 80 }

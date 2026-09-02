@@ -1,0 +1,15 @@
+# Pipeline
+pymupdf
+pillow
+requests
+pydantic
+python-dotenv
+json-repair
+pandas
+filelock
+databricks-sql-connector
+google-genai
+
+# Demo web app
+fastapi
+uvicorn[standard]

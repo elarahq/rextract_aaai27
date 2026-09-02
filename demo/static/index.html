@@ -1,0 +1,315 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>RE-XTRACT</title>
+<style>
+  :root{
+    --bg:#f6f7f9; --panel:#fff; --line:#dfe3e8; --ink:#1b1f24; --muted:#6b7280;
+    --teal:#1f6e78; --salm:#dd7458; --navy:#445692; --ok:#177245; --warn:#b45309;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;font:14px/1.5 -apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+       background:var(--bg);color:var(--ink)}
+  header{padding:14px 20px;background:var(--panel);border-bottom:1px solid var(--line);
+         display:flex;align-items:baseline;gap:16px;flex-wrap:wrap}
+  h1{margin:0;font-size:17px;letter-spacing:.04em}
+  h1 span{color:var(--teal)}
+  .cfg{margin-left:auto;display:flex;gap:6px;flex-wrap:wrap}
+  .chip{font-size:11px;padding:3px 8px;border:1px solid var(--line);border-radius:999px;
+        color:var(--muted);background:#fafbfc;white-space:nowrap}
+  main{display:grid;grid-template-columns:270px 1fr 340px;gap:14px;padding:14px;
+       height:calc(100vh - 58px)}
+  .panel{background:var(--panel);border:1px solid var(--line);border-radius:8px;
+         display:flex;flex-direction:column;overflow:hidden}
+  .panel h2{margin:0;padding:10px 12px;font-size:11px;text-transform:uppercase;
+            letter-spacing:.09em;color:var(--muted);border-bottom:1px solid var(--line)}
+  .body{overflow:auto;padding:10px 12px;flex:1}
+  .proj{padding:9px 10px;border:1px solid var(--line);border-radius:6px;margin-bottom:8px;
+        cursor:pointer;background:#fff}
+  .proj:hover{border-color:var(--teal)}
+  .proj[aria-selected=true]{border-color:var(--teal);background:#eef6f7}
+  .proj .id{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:11px;
+            word-break:break-all}
+  button{font:inherit;padding:8px 14px;border-radius:6px;border:1px solid var(--teal);
+         background:var(--teal);color:#fff;cursor:pointer;width:100%}
+  button[disabled]{opacity:.5;cursor:default}
+  #trace{background:#12161c;color:#d5dbe3;font-family:ui-monospace,SFMono-Regular,Menlo,monospace;
+         font-size:11.5px;line-height:1.62;white-space:pre-wrap;word-break:break-word}
+  .l-vote{color:#9fd0d6}
+  .l-frontier{color:#e3b7a6}
+  .l-round{color:#c9c4ee;font-weight:600;display:block;margin-top:6px}
+  .l-reject{color:#ffd7d0;background:#5c1f16;display:block;padding:3px 6px;margin:5px 0;
+            border-left:3px solid var(--salm);border-radius:2px;font-weight:600}
+  .l-confirm{color:#b9e8c8}
+  .l-stage{color:#fff;background:#243040;display:block;padding:3px 6px;margin:8px 0 3px;
+           border-radius:2px;font-weight:600}
+  .l-dim{color:#6f7b8a}
+  .kv{display:flex;justify-content:space-between;gap:10px;padding:5px 0;
+      border-bottom:1px dotted var(--line);font-size:12.5px}
+  .kv b{font-weight:600}
+  .kv .v{font-family:ui-monospace,Menlo,monospace}
+  .rec-h{font-size:11px;text-transform:uppercase;letter-spacing:.07em;color:var(--muted);
+         margin:12px 0 4px}
+  .doc{font-size:11.5px;padding:5px 0;border-bottom:1px dotted var(--line);
+       display:flex;gap:6px;align-items:flex-start}
+  .tag{font-size:9.5px;padding:1px 5px;border-radius:3px;background:#eef1f4;color:var(--muted);
+       text-transform:uppercase;letter-spacing:.05em;flex-shrink:0;margin-top:2px}
+  .badge{display:inline-block;font-size:10.5px;padding:2px 7px;border-radius:999px;font-weight:600}
+  .b-abstain{background:#fdf0e9;color:var(--salm);border:1px solid #f0c4b4}
+  .b-ok{background:#e9f5ee;color:var(--ok);border:1px solid #bfe0cc}
+  .b-skip{background:#eef1f4;color:var(--muted);border:1px solid var(--line)}
+  .empty{color:var(--muted);font-size:12px;padding:6px 0}
+  .doc{cursor:pointer;border-radius:4px}
+  .doc:hover{background:#f2f6f7}
+  .doc .open{font-size:10px;color:var(--teal);margin-left:auto;flex-shrink:0;
+             opacity:0;white-space:nowrap}
+  .doc:hover .open{opacity:1}
+  #overlay{position:fixed;inset:0;background:rgba(18,22,28,.62);display:none;
+           align-items:center;justify-content:center;z-index:50}
+  #overlay[data-open=true]{display:flex}
+  .sheet{background:var(--panel);width:94vw;height:92vh;border-radius:10px;
+         display:flex;flex-direction:column;overflow:hidden;
+         box-shadow:0 18px 50px rgba(0,0,0,.3)}
+  .sheet header{display:flex;align-items:center;gap:12px;padding:10px 14px;
+                border-bottom:1px solid var(--line);background:var(--panel)}
+  .sheet header .nm{font-family:ui-monospace,Menlo,monospace;font-size:12px;
+                    word-break:break-all}
+  .sheet .close{margin-left:auto;border:1px solid var(--line);background:#fff;
+                color:var(--ink);width:auto;padding:5px 12px;font-size:12px}
+  .sheet .split{flex:1;display:grid;grid-template-columns:1fr 320px;min-height:0}
+  .sheet iframe{width:100%;height:100%;border:0;border-right:1px solid var(--line);
+                background:#525659}
+  .sheet .side{overflow:auto;padding:14px 16px}
+  .verify{background:#eef6f7;border:1px solid #cfe4e6;border-radius:6px;
+          padding:9px 11px;font-size:12px;color:#17545c;margin-bottom:12px}
+</style>
+</head>
+<body>
+<header>
+  <h1>RE&#8209;<span>XTRACT</span></h1>
+  <span style="color:var(--muted);font-size:12px">unanimity-gated extraction with calibrated abstention</span>
+  <div class="cfg" id="cfg"></div>
+</header>
+
+<main>
+  <section class="panel">
+    <h2>Projects</h2>
+    <div class="body" id="projects"></div>
+    <div style="padding:10px 12px;border-top:1px solid var(--line)">
+      <button id="run" disabled>Run pipeline</button>
+    </div>
+  </section>
+
+  <section class="panel">
+    <h2>Live decision trace</h2>
+    <div class="body" id="trace"></div>
+  </section>
+
+  <section class="panel">
+    <h2>Documents &amp; record</h2>
+    <div class="body">
+      <div id="docs"><div class="empty">Select a project.</div></div>
+      <div id="record"></div>
+      <div id="summary"></div>
+    </div>
+  </section>
+</main>
+
+<div id="overlay" data-open="false">
+  <div class="sheet">
+    <header>
+      <span class="tag" id="ov-cat"></span>
+      <span class="nm" id="ov-name"></span>
+      <button class="close" id="ov-close">Close</button>
+    </header>
+    <div class="split">
+      <iframe id="ov-pdf" title="Filing"></iframe>
+      <div class="side" id="ov-side"></div>
+    </div>
+  </div>
+</div>
+
+<script>
+const $ = s => document.querySelector(s);
+let selected = null, source = null;
+let docState = {};   // name -> {url, category, fields, status}
+
+fetch('/api/config').then(r => r.json()).then(c => {
+  $('#cfg').innerHTML = [
+    `local: ${c.local_model}`,
+    `frontier: ${c.frontier_model}`,
+    `M=${c.votes_per_round}`, `N=${c.max_rounds}`, `K=${c.frontier_calls}`,
+    `rc_ec: ${c.rc_ec_backend}`, `oc_cc: ${c.oc_cc_backend}`
+  ].map(t => `<span class="chip">${t}</span>`).join('');
+});
+
+fetch('/api/projects').then(r => r.json()).then(list => {
+  $('#projects').innerHTML = list.map(p => `
+    <div class="proj" data-id="${p.rera_id}" aria-selected="false">
+      <div class="id">${p.rera_id}</div>
+    </div>`).join('');
+  document.querySelectorAll('.proj').forEach(el => el.onclick = () => {
+    document.querySelectorAll('.proj').forEach(x => x.setAttribute('aria-selected','false'));
+    el.setAttribute('aria-selected','true');
+    selected = el.dataset.id;
+    $('#run').disabled = false;
+  });
+});
+
+function line(cls, text){
+  const span = document.createElement('span');
+  span.className = cls;
+  span.textContent = text + '\n';
+  $('#trace').appendChild(span);
+  $('#trace').scrollTop = $('#trace').scrollHeight;
+}
+
+function classify(text){
+  if (/validator rejected/i.test(text))  return 'l-reject';
+  if (/validator confirmed/i.test(text)) return 'l-confirm';
+  if (/Round \d+\//.test(text))          return 'l-round';
+  if (/^\[Ollama\]/.test(text))          return 'l-vote';
+  if (/^\[Gemini\]/.test(text))          return 'l-frontier';
+  if (/^\[(Classifier|Extractor|Tiebreaker)\]/.test(text)) return 'l-dim';
+  return 'l-dim';
+}
+
+$('#run').onclick = () => {
+  if (!selected) return;
+  if (source) source.close();
+  $('#trace').innerHTML = ''; $('#record').innerHTML = ''; $('#summary').innerHTML = '';
+  docState = {}; $('#docs').innerHTML = '<div class="empty">Fetching document list…</div>';
+  $('#run').disabled = true;
+
+  source = new EventSource(`/api/run?rera_id=${encodeURIComponent(selected)}`);
+  const on = (name, fn) => source.addEventListener(name, e => fn(JSON.parse(e.data)));
+
+  on('status', d => line('l-dim', d.message));
+  on('log',    d => line(classify(d.text), d.text));
+
+  on('documents', d => {
+    docState = {};
+    d.documents.forEach(x => docState[x.name] = {url: x.url, category: x.category,
+                                                fields: null, status: null});
+    renderDocs();
+  });
+
+  on('doc_start', d => line('l-stage', `DOCUMENT ${d.index}/${d.total}  ${d.category}  ${d.name}`));
+  on('doc_error', d => line('l-reject', `download failed: ${d.message}`));
+
+  on('classify', d => line('l-stage',
+    `CLASSIFIED  ${d.document_type}   rounds=${d.rounds}  unanimous=${d.unanimous}`));
+  on('extract', d => {
+    line('l-stage', `EXTRACTED  rounds=${d.rounds}  unanimous=${d.unanimous}`);
+    if (docState[d.name]) { docState[d.name].fields = d.fields; docState[d.name].status = 'ok'; }
+    renderDocs();
+  });
+
+  on('skipped', d => {
+    line('l-dim', `skipped: not an in-schema certificate (${d.document_type})`);
+    if (docState[d.name]) docState[d.name].status = 'skip';
+    renderDocs();
+  });
+  on('abstained', d => {
+    line('l-reject', `ABSTAINED at ${d.stage}, no values written`);
+    if (docState[d.name]) docState[d.name].status = 'abstain';
+    renderDocs();
+  });
+
+  on('record', d => renderRecord(d.record));
+  on('summary', d => {
+    $('#summary').innerHTML = `<div class="rec-h">Run</div>
+      <div class="kv"><b>elapsed</b><span class="v">${d.elapsed_seconds}s</span></div>
+      <div class="kv"><b>local tokens</b><span class="v">${d.local_tokens.toLocaleString()}</span></div>
+      <div class="kv"><b>frontier tokens</b><span class="v">${d.frontier_tokens.toLocaleString()}</span></div>
+      ${d.local_share !== null ? `<div class="kv"><b>served locally</b><span class="v">${d.local_share}%</span></div>` : ''}`;
+  });
+
+  on('error', d => line('l-reject', `ERROR ${d.message}`));
+  source.addEventListener('done', () => { source.close(); $('#run').disabled = false; line('l-dim','— run complete —'); });
+  source.onerror = () => { source.close(); $('#run').disabled = false; };
+};
+
+const BADGE = {ok:['b-ok','extracted'], abstain:['b-abstain','abstained'],
+               skip:['b-skip','out of schema']};
+
+function renderDocs(){
+  const names = Object.keys(docState);
+  if (!names.length){ $('#docs').innerHTML = '<div class="empty">No documents returned.</div>'; return; }
+  $('#docs').innerHTML = names.map(n => {
+    const d = docState[n];
+    const b = BADGE[d.status];
+    return `<div class="doc" data-name="${encodeURIComponent(n)}">
+      <span class="tag">${d.category}</span>
+      <span>${n}</span>
+      ${b ? `<span class="badge ${b[0]}" style="margin-left:auto">${b[1]}</span>`
+          : '<span class="open">view PDF &rsaquo;</span>'}
+    </div>`;
+  }).join('');
+  document.querySelectorAll('#docs .doc').forEach(el =>
+    el.onclick = () => openDoc(decodeURIComponent(el.dataset.name)));
+}
+
+function openDoc(name){
+  const d = docState[name];
+  if (!d || !d.url) return;
+  $('#ov-name').textContent = name;
+  $('#ov-cat').textContent = d.category;
+  $('#ov-pdf').src = '/api/pdf?url=' + encodeURIComponent(d.url);
+  let h = '<div class="verify">Check each value below against the filing on the left.</div>';
+  if (d.status === 'ok' && d.fields){
+    h += '<div class="rec-h">Extracted from this document</div>';
+    for (const [k, v] of Object.entries(d.fields))
+      h += kv(k.replace(/_/g,' '), v);
+  } else if (d.status === 'abstain'){
+    h += '<div class="rec-h">Result</div><span class="badge b-abstain">abstained</span>'
+       + '<div class="empty">The gates did not converge, so no values were written '
+       + 'for this document.</div>';
+  } else if (d.status === 'skip'){
+    h += '<div class="rec-h">Result</div><span class="badge b-skip">out of schema</span>'
+       + '<div class="empty">Classified as out-of-schema and not extracted.</div>';
+  } else {
+    h += '<div class="empty">Not processed yet.</div>';
+  }
+  $('#ov-side').innerHTML = h;
+  $('#overlay').dataset.open = 'true';
+}
+
+function closeDoc(){
+  $('#overlay').dataset.open = 'false';
+  $('#ov-pdf').src = 'about:blank';
+}
+$('#ov-close').onclick = closeDoc;
+$('#overlay').onclick = e => { if (e.target.id === 'overlay') closeDoc(); };
+document.addEventListener('keydown', e => { if (e.key === 'Escape') closeDoc(); });
+
+function kv(k, v){
+  return `<div class="kv"><b>${k}</b><span class="v">${v == null || v === '' ? '—' : v}</span></div>`;
+}
+
+function renderRecord(r){
+  let h = '<div class="rec-h">Extracted record</div>';
+  if (r.registration_details){
+    const d = r.registration_details;
+    h += '<div class="rec-h">Registration</div>' +
+         kv('registered', d.registration_date) +
+         kv('promised completion', d.promised_completion_date);
+  }
+  (r.extension_details || []).forEach((d,i) => {
+    h += `<div class="rec-h">Extension ${i+1}</div>` +
+         kv('approved', d.extension_approval_date) +
+         kv('revised completion', d.revised_promised_completion_date);
+  });
+  (r.oc_cc_documents || []).forEach((d,i) => {
+    h += `<div class="rec-h">OC / CC ${i+1}</div>` +
+         kv('type', d.type) + kv('issued', d.issue_date) +
+         (d.details ? kv('scope', d.details) : '');
+  });
+  if (h.indexOf('kv') === -1) h += '<div class="empty">Nothing written yet.</div>';
+  $('#record').innerHTML = h;
+}
+</script>
+</body>
+</html>

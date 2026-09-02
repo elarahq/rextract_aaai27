@@ -1,0 +1,12 @@
+# Confusion matrices, shared 143-document benchmark. Rows = ground truth, cols = prediction.
+# Class order: RC = Registration, EC = Extension, OCCC = OC/Completion, UNK = Unknown (out-of-schema)
+#
+system,gt,pred_RC,pred_EC,pred_OCCC,pred_UNK
+gen_verifier,RC,43,2,0,0
+gen_verifier,EC,0,8,0,0
+gen_verifier,OCCC,0,0,62,0
+gen_verifier,UNK,1,0,18,9
+concur,RC,44,0,0,1
+concur,EC,0,8,0,0
+concur,OCCC,0,0,58,4
+concur,UNK,0,0,2,26
