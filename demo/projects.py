@@ -1,40 +1,32 @@
 """Preloaded demo corpus.
 
-Six projects from the evaluation benchmark, chosen because the two systems
-scored them differently. Between them they cover a clean unanimous round, a
-round the frontier model rejects, and a document the pipeline abstains on.
-Provenance: paper/data/misclassifications.csv
+Five projects from the evaluation benchmark. Between them they cover a full
+certificate lifecycle, two straightforward Occupancy Certificate cases, and two
+projects the predecessor pipeline got wrong in different ways.
+
+Ground truth and baseline outcomes: paper/data/generator_verifier_baseline.csv
+The UI renders `rera_id` only; `label` is documentation.
 """
 
 PROJECTS = [
     {
-        "rera_id": "WBRERA/P/SOU/2023/000294",
+        "rera_id": "P01100001916",
+        "label": "Telangana",
+    },
+    {
+        "rera_id": "HIRA/P/KOL/2019/000445",
+        "label": "West Bengal / Kolkata (HIRA)",
+    },
+    {
+        "rera_id": "WBRERA/P/SOU/2023/000024",
         "label": "West Bengal / South 24 Parganas",
-        "note": "Clean case: votes agree on the first round.",
     },
     {
-        "rera_id": "WBRERA/P/SOU/2023/000155",
-        "label": "West Bengal / Prestige",
-        "note": "Has no OC or CC. The predecessor wrote a GST certificate in as an Occupancy Certificate dated 2022-10-19.",
-    },
-    {
-        "rera_id": "MAA07612/A2M/EX1/020725/310826",
-        "label": "Gujarat / Ahmedabad",
-        "note": "Misrouted by both systems, in opposite directions.",
-    },
-    {
-        "rera_id": "UPRERAPRJ757529",
-        "label": "Uttar Pradesh",
-        "note": "Still false-accepted. Shown deliberately.",
-    },
-    {
-        "rera_id": "HIRA/P/SOU/2018/000168",
-        "label": "West Bengal / HIRA",
-        "note": "Multi-document project with an extension certificate.",
+        "rera_id": "WBRERA/P/SOU/2023/000215",
+        "label": "West Bengal / South 24 Parganas",
     },
     {
         "rera_id": "RERA-GRG-100-2018",
         "label": "Haryana / Gurugram",
-        "note": "Predecessor returned 28/02/19 under an inferred date format.",
     },
 ]
